@@ -33,15 +33,12 @@ pipeline {
             }
         }
         stage('CanaryDeploy') {
-            when {
-                branch 'master'
-            }
             environment { 
                 CANARY_REPLICAS = 1
             }
             steps {
                 kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
+                    kubeconfigId: '962edbdf-ef11-4c85-85b5-7f7762564f31',
                     configs: 'train-schedule-kube-canary.yml',
                     enableConfigSubstitution: true
                 )
