@@ -37,30 +37,16 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "build=$BUILD_NUMBER"'
+               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "env=test build=$BUILD_NUMBER"'
             }
         }
         stage('DeployToProduction') {
-            when {
-                branch 'master'
-            }
             environment { 
                 CANARY_REPLICAS = 0
             }
             steps {
-                input 'Deploy to Production?'
-                milestone(1)
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig',
-                    configs: 'train-schedule-kube.yml',
-                    enableConfigSubstitution: true
-                )
-            }
+               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "env=prod build=$BUILD_NUMBER"'
+                 }
         }
     }
 }
