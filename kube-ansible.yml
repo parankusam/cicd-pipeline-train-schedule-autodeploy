@@ -13,7 +13,7 @@
          else
             echo "No app service found"
          fi
-    - name: deploy app
+    - name: deploy app as per env
       shell: kubectl create deploy train-schedule-deployment-canary --image=parankusam/train-schedule:{{ build }}
     - name: increase replicas 
       shell: kubectl scale deploy train-schedule-deployment-canary  --replicas=1
