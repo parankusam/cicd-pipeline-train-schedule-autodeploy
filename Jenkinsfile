@@ -37,11 +37,7 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-                kubernetesDeploy(
-                    kubeconfigId: 'kubeconfig-test',
-                    configs: 'train-schedule-kube-canary.yml',
-                    enableConfigSubstitution: true
-                )
+               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "build=$env.BUILD_NUMBER "'
             }
         }
         stage('DeployToProduction') {
