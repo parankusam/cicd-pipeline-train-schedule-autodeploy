@@ -1,0 +1,21 @@
+- hosts: test
+  become: yes
+  tasks: 
+    - name: remove any previous app services
+      shell: | 
+         if [ `kubectl get deploy | grep -v NAME | awk '{print $1}' | grep train-schedule-deployment-canary | wc -l` -gt 0 ]; then  
+            kubectl delete deploy `kubectl get deploy | grep -v NAME | awk '{print $1}' | grep train-schedule-deployment-canary`
+         else 
+            echo "No app deployments found"
+         fi
+         if [ `kubectl get svc | grep train-schedule-service-canary  | awk '{print $1}' | wc -l` -gt 0 ]; then
+            kubectl delete svc `kubectl get svc | grep train-schedule-service-canary | awk '{print $1}'`
+         else
+            echo "No app service found"
+         fi
+    - name: deploy app
+      shell: kubectl create deploy train-schedule-deployment-canary --image=parankusam/train-schedule:{{ build }}
+    - name: increase replicas 
+      shell: kubectl scale deploy train-schedule-deployment-canary  --replicas=1
+    - name: deploy service
+      shell: kubectl expose deployment train-schedule-deployment-canary  --name train-schedule-service-canary  --type NodePort --port 80 --target-port 30001
