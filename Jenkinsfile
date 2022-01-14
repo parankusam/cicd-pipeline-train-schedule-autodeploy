@@ -38,7 +38,7 @@ pipeline {
             }
             steps {
                 kubernetesDeploy(
-                    kubeconfigId: '962edbdf-ef11-4c85-85b5-7f7762564f31',
+                    kubeconfigId: 'kubeconfig-test',
                     configs: 'train-schedule-kube-canary.yml',
                     enableConfigSubstitution: true
                 )
