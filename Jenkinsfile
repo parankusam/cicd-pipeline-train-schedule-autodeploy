@@ -37,7 +37,7 @@ pipeline {
                 CANARY_REPLICAS = 1
             }
             steps {
-               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "build=$env.BUILD_NUMBER "'
+               sh 'ansible-playbook -i /etc/ansible/hosts kube-ansible.yml --extra-vars "build=$BUILD_NUMBER"'
             }
         }
         stage('DeployToProduction') {
